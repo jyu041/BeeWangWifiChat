@@ -14,6 +14,7 @@ This is a simple, efficient chatting program (well still in development)!
 - tkinter (for the GUI)
 - threading (for being able to recieve messages and send messages)
 - socket (the base of the program, to create TCP connections)
+ - sys (mainly for force quitting the program)
 
 # Info:
 - There is a variable called "con_limit" in "server.py", this is a limit of how much clients can be connected at once
