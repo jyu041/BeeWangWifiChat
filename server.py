@@ -1,9 +1,14 @@
+# server.py
+# BeeWang
+# A TCP chatting program
+
 import tkinter as tk 
 from threading import Thread
-import socket
+import socket, sys
 
 all_connections = []
 con_limit = 5
+user_dict = {}
 
 def getip():
     supnig = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -28,19 +33,39 @@ def send_msg(*args):
     textbox.config(state=tk.DISABLED)
     textbox.see('end')
 
-def send_from_other(other_data):
+def send_from_other(other_data, conn_obj1, write):
     for connection in all_connections:
+        if connection == conn_obj1:
+            continue
         connection.send(other_data.encode())
 
-def recv_msg(connection_obj):
-    while True:
-        got_data = connection_obj.recv(1024).decode()
-        root.focus_set()
+    if write:
         textbox.config(state=tk.NORMAL)
-        textbox.insert('end', f'{got_data}\n')
-        send_from_other(got_data)
+        textbox.insert('end', f'{other_data}\n')
         textbox.config(state=tk.DISABLED)
         textbox.see('end')
+
+def recv_msg(connection_obj):
+    try:
+        while True:
+            got_data = connection_obj.recv(1024).decode()
+            root.focus_set()
+            '''
+            if len(user_dict[str(connection_obj)]) == 2:
+                user_dict.update({str(connection_obj.getpeername()):got_data.split(':')[0]})
+                print(user_dict)
+                print(user_dictp[connection_obj])
+            '''
+            textbox.config(state=tk.NORMAL)
+            textbox.insert('end', f'{got_data}\n')
+            send_from_other(got_data, connection_obj, False)
+            textbox.config(state=tk.DISABLED)
+            textbox.see('end')
+    except Exception as e:
+        all_connections.remove(connection_obj)
+        print(connection_obj)
+        bye_user = str(connection_obj).split('raddr=')[1].strip('>')
+        send_from_other(f'System: {bye_user} left the chat','', True)
 
 def started_server():
     for widget in root.winfo_children():
@@ -61,11 +86,16 @@ def started_server():
     text_enter.bind('<Return>', send_msg)
     
 def check_connect():
-    while len(all_connections) <= con_limit:
-        c, address = s.accept()
-        all_connections.append(c)
-        print(f'Connection has been established from {address[0]}')
-        each_thread(c)
+    while len(all_connections) < con_limit:
+        try:
+            c, address = s.accept()
+            all_connections.append(c)
+            print(f'Connection has been established from {address[0]}')
+            sys_message(f'Connection from: {address[0]}', 'all')
+            user_dict.update({str(c.getpeername()):[address[0], address[1]]})
+            each_thread(c)
+        except:
+            sys.exit()
     print('Too much connections!')
 
 def each_thread(conn_obj):
@@ -74,24 +104,42 @@ def each_thread(conn_obj):
     exec(command)
     exec(command_start)
 
+def on_closing():
+    try:
+        print('Server closed')
+        s.close()
+        sys.exit()
+    except Exception as e:
+        print(e)
+
+def sys_message(msg, target):
+    if target == 'all':
+        for conneciton in all_connections:
+            conneciton.send(msg.encode())
+
+    textbox.config(state=tk.NORMAL)
+    textbox.insert('end', f'{msg}\n')
+    textbox.config(state=tk.DISABLED)
+    textbox.see('end')
+
 root = tk.Tk()
 root.title('Texting Server')
 root.resizable(False, False)
 root.configure(bg='#363636')
-
+root.protocol("WM_DELETE_WINDOW", on_closing)
 host = getip()
 port = 8888
 
 global s
-
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))
-print('Waiting for connections')
 s.listen()
+print('Waiting for connections')
 print(f'Server has been started as {host} on port {port}')
 
 wait_t = Thread(target=check_connect)
 wait_t.start()
-
 started_server()
+
+sys_message(f'Server has been started as {host} on port {port}', '')
 root.mainloop()

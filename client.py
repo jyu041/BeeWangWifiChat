@@ -1,6 +1,10 @@
+# client.py
+# BeeWang
+# A TCP chatting program
+
 import tkinter as tk 
 from threading import Thread
-import socket, time
+import socket, sys
 
 def getip():
     supnig = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -16,7 +20,6 @@ def getip():
 
 your_ip = getip()
 
-
 def send_msg(*args):
     textbox.config(state=tk.NORMAL)
     write_data = str(text_enter.get())
@@ -27,15 +30,27 @@ def send_msg(*args):
     textbox.see('end')
 
 def recv_msg():
-    while True:
-        root.lift()
-        got_data = s.recv(1024).decode()
+    try:
+        while True:
+            root.focus_set()
+            got_data = s.recv(1024).decode()
+            if len(got_data) == 0: 
+                print('Server Disonnected')
+                on_closing()
+            textbox.config(state=tk.NORMAL)
+            textbox.insert('end', f'{got_data}\n')
+            textbox.config(state=tk.DISABLED)
+            textbox.see('end')
+    except Exception as e:
+        print('Server closed/connection error, disconnected from server')
         textbox.config(state=tk.NORMAL)
-        textbox.insert('end', f'{got_data}\n')
+        textbox.insert('end', f'Server closed or connection error, disconnected from server\n')
         textbox.config(state=tk.DISABLED)
         textbox.see('end')
+        s.close()
 
-def started_server():
+
+def started_gui():
     for widget in root.winfo_children():
         widget.destroy()
 
@@ -59,17 +74,26 @@ def started_server():
 
     recv_t = Thread(target=recv_msg)
     recv_t.start()
-    
+
+def on_closing():
+    try:
+        s.close()
+        sys.exit()
+    except Exception as e:
+        print(e)
+
 root = tk.Tk()
 root.title('Texting Client')
 root.resizable(False, False)
 root.configure(bg='#363636')
+root.protocol("WM_DELETE_WINDOW", on_closing)
 
 host = input('Enter the server ip >>> ')
 your_name = input('Enter your name please >>> ')
 port = 8888
 
+global s
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((host, port))
-started_server()
+started_gui()
 root.mainloop()
