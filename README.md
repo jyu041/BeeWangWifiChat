@@ -15,6 +15,21 @@ This is a simple, efficient chatting program (well still in development)!
 - threading (for being able to recieve messages and send messages)
 - socket (the base of the program, to create TCP connections)
 
+# Info:
+- There is a variable called "con_limit" in "server.py", this is a limit of how much clients can be connected at once
+- Server still use quite a lot of resource power, I am too bad to fix this, I need people who are better xD
+
 # Apologies!
 I have not studied python very deeply or networking very deeply, there could be way more potential to this program, but I just have not
 got the skills to discover them. 
+
+# ChangeLog:
+**Version 2:** 
+ * 25th May 2020
+ - Added more messages to inform users about situations
+ - Python does not crash and quit anymore when ever a client or server disconnects
+ - Server should now allow clients to "rejoin" if their spot were not taken
+
+**Version 1:** 
+ * 24th May 2020
+ - The base of the program, allows a server and multiple clients have a "group chat" environment with GUI.
