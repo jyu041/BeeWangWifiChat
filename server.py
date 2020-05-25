@@ -2,13 +2,22 @@
 # BeeWang
 # A TCP chatting program
 
-import tkinter as tk 
-from threading import Thread
-import socket, sys
+import sys, time
+try:
+    import tkinter as tk 
+    from threading import Thread
+    import socket
+    from plyer import notification
+except Exception as e:
+    print(e)
+    time.sleep(10)
+    sys.exit()
 
 all_connections = []
 con_limit = 5
 user_dict = {}
+
+focussing = True
 
 def getip():
     supnig = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -24,6 +33,9 @@ def getip():
 
 def send_msg(*args):
     write_data = str(text_enter.get())
+    if len(write_data) == 0:
+        return
+
     for connection in all_connections:
         connection.send((f'Server: {write_data}').encode())
 
@@ -61,6 +73,19 @@ def recv_msg(connection_obj):
             send_from_other(got_data, connection_obj, False)
             textbox.config(state=tk.DISABLED)
             textbox.see('end')
+            try:
+                root.deiconify()
+            except:
+                pass
+            global focussing
+            if focussing == False:
+                notification.notify(
+                    title= f'{got_data.split(":")[0]}',
+                    message= f'{got_data.split(":")[1]}',
+                    app_name='BeeWangWifiChat',
+                    timeout = 2
+                )
+            
     except Exception as e:
         all_connections.remove(connection_obj)
         print(connection_obj)
@@ -108,9 +133,9 @@ def on_closing():
     try:
         print('Server closed')
         s.close()
-        sys.exit()
     except Exception as e:
         print(e)
+    sys.exit()
 
 def sys_message(msg, target):
     if target == 'all':
@@ -122,11 +147,18 @@ def sys_message(msg, target):
     textbox.config(state=tk.DISABLED)
     textbox.see('end')
 
+def handle_focus(focus_state):
+    global focussing
+    focussing = focus_state
+
 root = tk.Tk()
 root.title('Texting Server')
 root.resizable(False, False)
 root.configure(bg='#363636')
 root.protocol("WM_DELETE_WINDOW", on_closing)
+root.bind('<Unmap>', lambda x: handle_focus(False))
+root.bind('<FocusIn>', lambda x: handle_focus(True))
+
 host = getip()
 port = 8888
 
