@@ -27,6 +27,11 @@ I have not studied python very deeply or networking very deeply, there could be 
 got the skills to discover them. 
 
 # ChangeLog:
+**Version 4:**
+ * 26th May 2020 (Morning)
+ - Super improvement on the UI
+ - More improvement on data control stuff
+
 **Version 3:**
  * 25th May 2020 (Afternoon)
  - Added ability to stop spam, clients can not repeat same message twice in a row
