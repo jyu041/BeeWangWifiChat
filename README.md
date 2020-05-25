@@ -31,6 +31,7 @@ got the skills to discover them.
  * 26th May 2020 (Morning)
  - Super improvement on the UI
  - More improvement on data control stuff
+ - (Quick Fix) Fixed visual glitch when the amount of text lines exceed the textbox could display
 
 **Version 3:**
  * 25th May 2020 (Afternoon)
