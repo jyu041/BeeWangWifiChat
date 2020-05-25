@@ -22,6 +22,9 @@ This is a simple, efficient chatting program (well still in development)!
 - There is a variable called "con_limit" in "server.py", this is a limit of how much clients can be connected at once
 - Server still use quite a lot of resource power, I am too bad to fix this, I need people who are better xD
 
+# Current Major Issues:
+ - The program does not work properly as intended on MacOS computers
+
 # Apologies!
 I have not studied python very deeply or networking very deeply, there could be way more potential to this program, but I just have not
 got the skills to discover them. 
