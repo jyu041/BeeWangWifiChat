@@ -105,7 +105,7 @@ def started_server():
         widget.destroy()
 
     global textbox, text_enter
-    textbox = tk.Text(root, relief='flat', width=35, height=20, bg='#363636', fg='white', font=("Arial", 9))
+    textbox = tk.Text(root, relief='flat', width=35, height=18, bg='#363636', fg='white', font=("Arial", 9))
     textbox.grid(column=0, row=3, sticky='w')
     textbox.config(state=tk.DISABLED)
     yscroll = tk.Scrollbar(root, command=textbox.yview, orient=tk.VERTICAL)
@@ -126,7 +126,7 @@ def check_connect():
             c, address = s.accept()
             all_connections.append(c)
             print(f'Connection has been established from {address[0]}')
-            sys_message(f'Connection from: {address[0]}', 'all')
+            sys_message(f'Connection from: {address[0]}\n', 'all')
             user_dict.update({str(c.getpeername()):[address[0], address[1]]})
             each_thread(c)
         except:
@@ -177,7 +177,7 @@ def main_process(*args):
         wait_t = Thread(target=check_connect)
         wait_t.start()
         started_server()
-        sys_message(f'Server has been started as {host} on port {port}', '')
+        sys_message(f'Server has been started as {host} on port {port}\n', '')
 
 def shut_server():
     for connection in all_connections:

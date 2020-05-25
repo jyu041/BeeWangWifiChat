@@ -79,7 +79,7 @@ def started_gui():
         widget.destroy()
 
     global textbox, text_enter
-    textbox = tk.Text(root, relief='flat', width=35, height=20, bg='#363636', fg='white', font=("Arial", 9))
+    textbox = tk.Text(root, relief='flat', width=35, height=18, bg='#363636', fg='white', font=("Arial", 9))
     textbox.grid(column=0, row=3, sticky='w')
     textbox.config(state=tk.DISABLED)
     yscroll = tk.Scrollbar(root, command=textbox.yview, orient=tk.VERTICAL)
