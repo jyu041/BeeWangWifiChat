@@ -15,6 +15,8 @@ This is a simple, efficient chatting program (well still in development)!
 - threading (for being able to recieve messages and send messages)
 - socket (the base of the program, to create TCP connections)
  - sys (mainly for force quitting the program)
+ - plyer (to give a notification)
+ - time (mainly using the .sleep() method)
 
 # Info:
 - There is a variable called "con_limit" in "server.py", this is a limit of how much clients can be connected at once
@@ -25,12 +27,19 @@ I have not studied python very deeply or networking very deeply, there could be 
 got the skills to discover them. 
 
 # ChangeLog:
+**Version 3:**
+ * 25th May 2020 (Afternoon)
+ - Added ability to stop spam, clients can not repeat same message twice in a row
+ - Users can not spam the enter key to spam empty strings
+ - Added desktop notification (only active when window does not have focus)
+ - Added glowing icon notification (only active when window does not have focus)
+
 **Version 2:** 
- * 25th May 2020
+ * 25th May 2020 (Before the morning, around 3am)
  - Added more messages to inform users about situations
  - Python does not crash and quit anymore when ever a client or server disconnects
  - Server should now allow clients to "rejoin" if their spot were not taken
 
 **Version 1:** 
- * 24th May 2020
+ * 24th May 2020 (Night)
  - The base of the program, allows a server and multiple clients have a "group chat" environment with GUI.
